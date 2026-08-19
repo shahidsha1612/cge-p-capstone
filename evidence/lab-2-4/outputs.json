@@ -1,0 +1,41 @@
+{
+  "attestation": {
+    "sensitive": false,
+    "type": [
+      "object",
+      {
+        "encryption_algorithm": "string",
+        "kms_rotation_period": "string",
+        "public_access_prevention": "string",
+        "required_labels_present": "bool",
+        "retention_period_days": "number",
+        "uniform_access_enforced": "bool",
+        "versioning_enabled": "bool"
+      }
+    ],
+    "value": {
+      "encryption_algorithm": "google-managed-cmek-aes256",
+      "kms_rotation_period": "7776000s",
+      "public_access_prevention": "enforced",
+      "required_labels_present": true,
+      "retention_period_days": 30,
+      "uniform_access_enforced": true,
+      "versioning_enabled": true
+    }
+  },
+  "bucket_self_link": {
+    "sensitive": false,
+    "type": "string",
+    "value": "https://www.googleapis.com/storage/v1/b/cgep-lab-dev-adl-cap-001"
+  },
+  "bucket_url": {
+    "sensitive": false,
+    "type": "string",
+    "value": "gs://cgep-lab-dev-adl-cap-001"
+  },
+  "kms_key_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "projects/grc-cap-p/locations/us-central1/keyRings/adl-cap-001-ring/cryptoKeys/adl-cap-001-key"
+  }
+}

@@ -1,0 +1,12 @@
+default_kms_key: projects/grc-cap-p/locations/us-central1/keyRings/adl-cap-001-ring/cryptoKeys/adl-cap-001-key
+labels:
+  compliance_scope: cge-p-lab
+  environment: dev
+  managed_by: terraform
+  project: cgep-lab
+public_access_prevention: enforced
+retention_policy:
+  effectiveTime: '2026-08-19T15:54:08.735000+00:00'
+  retentionPeriod: '2592000'
+uniform_bucket_level_access: true
+versioning_enabled: true

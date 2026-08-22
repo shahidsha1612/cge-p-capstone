@@ -3,3 +3,5 @@
 *.tfstate.*
 tfplan
 crash.log
+humanizer/
+LAB-2.5-CONVERSATION.md

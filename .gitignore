@@ -2,6 +2,7 @@
 *.tfstate
 *.tfstate.*
 tfplan
+plan.json
 crash.log
 humanizer/
 LAB-2.5-CONVERSATION.md

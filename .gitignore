@@ -3,6 +3,7 @@
 *.tfstate.*
 tfplan
 plan.json
+!evidence/**/plan.json
 crash.log
 humanizer/
 LAB-2.5-CONVERSATION.md

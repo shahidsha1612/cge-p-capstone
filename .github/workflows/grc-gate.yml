@@ -83,8 +83,8 @@ jobs:
         run: |
           # Write SARIF for the artifact, then re-run with a severity floor so
           # tfsec's own exit code is the gate (no JSON parsing required).
-          tfsec "$TF_WORKING_DIR" --format sarif --out evidence/lab-4-3/tfsec.sarif || true
-          tfsec "$TF_WORKING_DIR" --minimum-severity HIGH
+          tfsec "$TF_WORKING_DIR" --config-file .tfsec/config.yml --format sarif --out evidence/lab-4-3/tfsec.sarif || true
+          tfsec "$TF_WORKING_DIR" --config-file .tfsec/config.yml --minimum-severity HIGH
 
       - name: Copy plan into evidence
         if: always()

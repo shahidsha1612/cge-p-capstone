@@ -28,7 +28,11 @@ resource "aws_iam_role" "grc_gate" {
       Action    = "sts:AssumeRoleWithWebIdentity"
       Condition = {
         StringEquals = { "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com" }
-        StringLike   = { "token.actions.githubusercontent.com:sub" = "repo:${var.github_org}/${var.github_repo}:*" }
+        # GitHub now embeds immutable numeric owner/repo IDs in the sub claim
+        # (e.g. repo:org@123/repo@456:pull_request), not the classic
+        # repo:OWNER/REPO:* format most OIDC tutorials show. Wildcard around
+        # the IDs while still pinning the literal org/repo names.
+        StringLike = { "token.actions.githubusercontent.com:sub" = "repo:${var.github_org}@*/${var.github_repo}@*:*" }
       }
     }]
   })

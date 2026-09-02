@@ -1,0 +1,163 @@
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # aws_s3_bucket.log will be created
+  + resource "aws_s3_bucket" "log" {
+      + acceleration_status         = (known after apply)
+      + acl                         = (known after apply)
+      + arn                         = (known after apply)
+      + bucket                      = (known after apply)
+      + bucket_domain_name          = (known after apply)
+      + bucket_prefix               = (known after apply)
+      + bucket_regional_domain_name = (known after apply)
+      + force_destroy               = false
+      + hosted_zone_id              = (known after apply)
+      + id                          = (known after apply)
+      + object_lock_enabled         = (known after apply)
+      + policy                      = (known after apply)
+      + region                      = (known after apply)
+      + request_payer               = (known after apply)
+      + tags_all                    = {
+          + "ComplianceScope" = "cge-p-lab"
+          + "Environment"     = "dev"
+          + "ManagedBy"       = "terraform"
+          + "Project"         = "cgep-lab"
+        }
+      + website_domain              = (known after apply)
+      + website_endpoint            = (known after apply)
+    }
+
+  # aws_s3_bucket.primary will be created
+  + resource "aws_s3_bucket" "primary" {
+      + acceleration_status         = (known after apply)
+      + acl                         = (known after apply)
+      + arn                         = (known after apply)
+      + bucket                      = (known after apply)
+      + bucket_domain_name          = (known after apply)
+      + bucket_prefix               = (known after apply)
+      + bucket_regional_domain_name = (known after apply)
+      + force_destroy               = false
+      + hosted_zone_id              = (known after apply)
+      + id                          = (known after apply)
+      + object_lock_enabled         = (known after apply)
+      + policy                      = (known after apply)
+      + region                      = (known after apply)
+      + request_payer               = (known after apply)
+      + tags_all                    = {
+          + "ComplianceScope" = "cge-p-lab"
+          + "Environment"     = "dev"
+          + "ManagedBy"       = "terraform"
+          + "Project"         = "cgep-lab"
+        }
+      + website_domain              = (known after apply)
+      + website_endpoint            = (known after apply)
+    }
+
+  # aws_s3_bucket_acl.log will be created
+  + resource "aws_s3_bucket_acl" "log" {
+      + acl    = "log-delivery-write"
+      + bucket = (known after apply)
+      + id     = (known after apply)
+    }
+
+  # aws_s3_bucket_logging.primary will be created
+  + resource "aws_s3_bucket_logging" "primary" {
+      + bucket        = (known after apply)
+      + id            = (known after apply)
+      + target_bucket = (known after apply)
+      + target_prefix = "access-logs/"
+    }
+
+  # aws_s3_bucket_ownership_controls.log will be created
+  + resource "aws_s3_bucket_ownership_controls" "log" {
+      + bucket = (known after apply)
+      + id     = (known after apply)
+
+      + rule {
+          + object_ownership = "BucketOwnerPreferred"
+        }
+    }
+
+  # aws_s3_bucket_public_access_block.log will be created
+  + resource "aws_s3_bucket_public_access_block" "log" {
+      + block_public_acls       = true
+      + block_public_policy     = true
+      + bucket                  = (known after apply)
+      + id                      = (known after apply)
+      + ignore_public_acls      = true
+      + restrict_public_buckets = true
+    }
+
+  # aws_s3_bucket_public_access_block.primary will be created
+  + resource "aws_s3_bucket_public_access_block" "primary" {
+      + block_public_acls       = true
+      + block_public_policy     = true
+      + bucket                  = (known after apply)
+      + id                      = (known after apply)
+      + ignore_public_acls      = true
+      + restrict_public_buckets = true
+    }
+
+  # aws_s3_bucket_server_side_encryption_configuration.log will be created
+  + resource "aws_s3_bucket_server_side_encryption_configuration" "log" {
+      + bucket = (known after apply)
+      + id     = (known after apply)
+
+      + rule {
+          + apply_server_side_encryption_by_default {
+              + sse_algorithm = "AES256"
+            }
+        }
+    }
+
+  # aws_s3_bucket_server_side_encryption_configuration.primary will be created
+  + resource "aws_s3_bucket_server_side_encryption_configuration" "primary" {
+      + bucket = (known after apply)
+      + id     = (known after apply)
+
+      + rule {
+          + apply_server_side_encryption_by_default {
+              + sse_algorithm = "AES256"
+            }
+        }
+    }
+
+  # aws_s3_bucket_versioning.primary will be created
+  + resource "aws_s3_bucket_versioning" "primary" {
+      + bucket = (known after apply)
+      + id     = (known after apply)
+
+      + versioning_configuration {
+          + mfa_delete = (known after apply)
+          + status     = "Enabled"
+        }
+    }
+
+  # random_id.bucket_suffix will be created
+  + resource "random_id" "bucket_suffix" {
+      + b64_std     = (known after apply)
+      + b64_url     = (known after apply)
+      + byte_length = 4
+      + dec         = (known after apply)
+      + hex         = (known after apply)
+      + id          = (known after apply)
+    }
+
+Plan: 11 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + bucket_arn           = (known after apply)
+  + bucket_name          = (known after apply)
+  + encryption_algorithm = "AES256"
+  + log_bucket_arn       = (known after apply)
+
+─────────────────────────────────────────────────────────────────────────────
+
+Saved the plan to: tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "tfplan"

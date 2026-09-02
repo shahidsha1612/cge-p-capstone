@@ -1,0 +1,9 @@
+# .tfsec/config.yml
+# Suppressions must justify themselves — no bare rule IDs.
+exclude:
+  # aws-s3-encryption-customer-key: compliant-s3 (Lab 2.3) intentionally uses
+  # AES256/SSE-S3, not a customer-managed KMS key, to keep the primitive simple.
+  # SC-28 is enforced by the Conftest gate (compliance.sc28_aws), which only
+  # requires an aws_s3_bucket_server_side_encryption_configuration to exist,
+  # not that it use CMEK. CMEK is introduced in a later lab.
+  - aws-s3-encryption-customer-key

@@ -22,28 +22,15 @@ $ aws securityhub describe-hub --region us-east-1
 "arn:aws:securityhub:us-east-1:467138365754:hub/default"
 ```
 
-15 real findings captured to `evidence/lab-5-2/security-hub-findings.json` — CloudWatch alarm-coverage gaps (missing metric filters for CloudTrail config changes, S3 bucket policy changes, NACL changes), exactly what a freshly-deployed account with no alarms wired up should surface.
+15 findings captured to `evidence/lab-5-2/security-hub-findings.json` — CloudWatch alarm-coverage gaps (missing metric filters for CloudTrail config changes, S3 bucket policy changes, NACL changes), the expected findings for a freshly-deployed account with no CloudWatch alarms configured yet.
 
-## The Honest Correction
+## Deploying Config
 
-The lab doc treats AWS Config as optional: skip it for cost, and Security Hub will still hand you one useful fallback — a CRITICAL "AWS Config should be enabled" finding. I tested that claim instead of taking it on faith, and it doesn't hold. Without Config, `aws securityhub get-enabled-standards` showed all three subscribed standards (NIST 800-53, FSBP, CIS) stuck in:
-
-```json
-"StandardsStatus": "INCOMPLETE",
-"StandardsStatusReason": { "StatusReasonCode": "NO_AVAILABLE_CONFIGURATION_RECORDER" }
-```
-
-Zero findings — not even the fallback one — after 40+ minutes of polling. Security Hub's standards evaluation is now fully gated on Config being present, not gracefully degraded without it. I added Config (`config.tf` — recorder, delivery channel, service-linked role) to unblock it; 15 findings appeared within ten minutes of the recorder starting.
-
-The practical implication is sharper than the doc suggests: in an org-managed account where Config is blocked by SCP, you don't get a self-documenting gap finding — you get silence. The real evidence of that gap has to be pulled from `get-enabled-standards`, not `get-findings`. That distinction is now documented in `terraform/baselines/aws/README.md`.
-
-## Also Surfaced: a Real Account-Level Gotcha
-
-Getting to that point required discovering that AWS accounts on the newer "Free Plan" credit tier block Security Hub and GuardDuty outright (`SubscriptionRequiredException`) regardless of IAM permissions — confirmed by testing S3/EC2/IAM (all fine) against Security Hub/GuardDuty (both blocked identically) on the same admin credentials. Fixed by upgrading the account off the Free Plan tier, which required root login since IAM users are blocked from billing actions by default. Not part of the lab doc, but exactly the kind of environment friction a real deployment runs into.
+Alongside CloudTrail and Security Hub, this deployment also enabled AWS Config (`config.tf` — recorder, delivery channel, service-linked role) so Security Hub's NIST 800-53 and FSBP standards could evaluate against a live resource inventory. Full control mapping for Config (CM-2, CM-6, CM-8) is in `terraform/baselines/aws/README.md`, along with the account's `get-enabled-standards` output before and after the recorder came online.
 
 ## Why It Matters
 
-An assessor doesn't need to trust that I ran the right checks — they read `get-findings` and `get-enabled-standards` directly, both already speaking NIST control language. And when I found the lab doc's own claim didn't survive contact with a real account, I tested it, documented the actual behavior, and adjusted the deployment instead of just going along with the doc. That's the difference between following a compliance checklist and actually verifying the control works the way it's claimed to.
+An assessor doesn't need to trust that the right checks ran — they read `get-findings` directly, already speaking NIST control language. CloudTrail, Config, and Security Hub together turn "we are compliant" from a claim into a live, queryable feed.
 
 ## Stack
 
@@ -53,10 +40,10 @@ An assessor doesn't need to trust that I ran the right checks — they read `get
 
 ### Suggested post caption
 
-> Stood up AWS's native continuous-monitoring stack today — CloudTrail, Config, and Security Hub, all mapped to NIST 800-53 controls out of the box. The lab doc claimed Config was optional and Security Hub would still hand you a useful fallback finding if you skipped it. I tested that instead of assuming it — and on a real account, skipping Config means Security Hub evaluates *nothing at all*, not even the fallback. Documented the real behavior, added Config, captured real findings, then tore everything down same-day. Small thing, but it's the difference between reading a compliance doc and verifying the control.
+> Stood up AWS's native continuous-monitoring stack today — CloudTrail, Config, and Security Hub, all mapped to NIST 800-53 controls out of the box. Captured real findings, then tore everything down same-day to keep costs at zero. Continuous monitoring, the way an auditor actually wants to see it: a live JSON feed, not a slide deck.
 >
 > #GRC #NIST80053 #AWS #ContinuousMonitoring #SecurityHub #DevSecOps
 
 ### Visual idea
 
-Three stacked panels — CloudTrail, Config, Security Hub — each with its control IDs and a one-line "proves" caption, connected by arrows into a single Security Hub findings panel. Below it, a small red-flagged callout box: "Doc said: fallback finding without Config. Reality: zero findings without Config." with the `NO_AVAILABLE_CONFIGURATION_RECORDER` status code shown in monospace.
+Three stacked panels — CloudTrail, Config, Security Hub — each with its control IDs and a one-line "proves" caption, connected by arrows into a single Security Hub findings panel showing a sample finding.

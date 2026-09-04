@@ -1,0 +1,33 @@
+Attempted resources: google_org_policy_policy.uniform_bucket_access,
+google_org_policy_policy.disable_sa_keys, google_org_policy_policy.require_oslogin
+Applied as: aceisace80@gmail.com (roles/owner on project grc-cap-p)
+
+Error (identical for all three, v2 Org Policy API via Terraform):
+
+Error: Error creating Policy: googleapi: Error 403: Permission
+'orgpolicy.policies.create' denied on resource
+'//cloudresourcemanager.googleapis.com/projects/grc-cap-p' (or it may not exist).
+  reason: IAM_PERMISSION_DENIED
+
+Diagnostic: legacy v1 Org Policy API produces the same denial for the same
+owner account:
+
+$ gcloud resource-manager org-policies enable-enforce compute.requireOsLogin \
+    --project=grc-cap-p --account=aceisace80@gmail.com
+ERROR: (gcloud.resource-manager.org-policies.enable-enforce)
+[aceisace80@gmail.com] does not have permission to access projects instance
+[grc-cap-p:setOrgPolicy] (or it may not exist). The caller does not have
+permission.
+
+Root cause: `gcloud projects describe grc-cap-p` returns no `parent` field —
+the project has no ancestor Organization. Both Org Policy API versions
+require an Organization resource to exist in the hierarchy to authorize a
+policy write, even one scoped to a single project. roles/owner does not
+bypass this; it is a structural account-tier limitation, not an IAM
+permission gap.
+
+Consequence, demonstrated live: with Org Policy unenforceable, a service
+account key WAS successfully created against the disableServiceAccountKeyCreation
+target (key ID 0834620deae6840b2806d1d51fcb6dcaa2680a8e, created under the
+owner account, then immediately deleted as cleanup). No FAILED_PRECONDITION
+was raised, confirming the constraint is not active on this project.
